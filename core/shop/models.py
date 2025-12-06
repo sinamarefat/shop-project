@@ -48,7 +48,7 @@ class ProductModel(models.Model):
     def __str__(self):
         return self.title
     
-    def get_price(self):        
+    def get_show_price(self):        
         discount_amount = self.price * Decimal(self.discount_percent / 100)
         discounted_amount = self.price - discount_amount
         return round(discounted_amount)
