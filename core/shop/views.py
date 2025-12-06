@@ -1,13 +1,13 @@
-# from django.views.generic import (
-#     TemplateView,
-#     ListView,
-#     DetailView,
-#     View
-# )
-# from .models import ProductModel, ProductStatusType, ProductCategoryModel, WishlistProductModel
-# from django.core.exceptions import FieldError
-# from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.http import JsonResponse
+from django.views.generic import (
+    TemplateView,
+    ListView,
+    DetailView,
+    View
+)
+from .models import ProductModel, ProductStatusType, ProductCategoryModel, WishlistProductModel
+from django.core.exceptions import FieldError
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 # from review.models import ReviewModel,ReviewStatusType
 # # Create your views here.
 
