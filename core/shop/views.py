@@ -14,7 +14,7 @@ from django.http import JsonResponse
 
 class ShopProductGridView(ListView):
     template_name = "shop/product-grid.html"
-    # paginate_by = 9
+    paginate_by = 9
     queryset = ProductModel.objects.filter(status=ProductStatusType.publish.value)
     
     def get_context_data(self, **kwargs):
