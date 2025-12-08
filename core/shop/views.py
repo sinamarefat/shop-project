@@ -46,8 +46,8 @@ class ShopProductGridView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_items"] = self.get_queryset().count()
-        context["wishlist_items"] = WishlistProductModel.objects.filter(user=self.request.user).values_list(
-            "product__id", flat=True) if self.request.user.is_authenticated else []
+        # context["wishlist_items"] = WishlistProductModel.objects.filter(user=self.request.user).values_list(
+        #     "product__id", flat=True) if self.request.user.is_authenticated else []
         context["categories"] = ProductCategoryModel.objects.all()
         return context
 
@@ -101,9 +101,3 @@ class ShopProductDetailView(DetailView):
 
 #         return JsonResponse({"message": message})
 
-# from django.shortcuts import render
-
-# from django.views.generic import TemplateView
-
-# class ShopProductGridView(TemplateView):
-#     template_name="shop/product-grid.html"
