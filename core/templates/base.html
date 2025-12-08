@@ -72,7 +72,7 @@
               <a class="nav-link " href="{% url 'website:about' %}">درباره ما</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'website:about' %}">ارتباط با ما</a>
+              <a class="nav-link " href="{% url 'website:contact' %}">ارتباط با ما</a>
             </li>
 
      
@@ -286,14 +286,14 @@
 
           <div class="mb-7">
             <!-- Form -->
-            <form>
+            <form action="{% url 'shop:product-grid' %}">
               <!-- Input Card -->
               <div class="input-card">
                 <div class="input-card-form">
-                  <input type="text" class="form-control form-control-lg" placeholder="جستجو محصولات"
+                  <input type="text" class="form-control form-control-lg" placeholder="جستجو محصولات" name="q"
                     aria-label="جستجو محصولات">
                 </div>
-                <button type="button" class="btn btn-primary btn-lg">جستجو کردن</button>
+                <button type="submit" class="btn btn-primary btn-lg">جستجو کردن</button>
               </div>
               <!-- End Input Card -->
             </form>
@@ -409,6 +409,8 @@
     </div>
   </div>
   <!-- ========== END SECONDARY CONTENTS ========== -->
+  <!-- JS jQuery -->
+  <script src="{% static 'js/jquery.min.js' %}"></script>
 
   <!-- JS Implementing Plugins -->
   <script src="{% static 'js/vendor.min.js' %}"></script>
