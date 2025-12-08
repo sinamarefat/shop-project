@@ -40,7 +40,7 @@
     <div class="container">
       <nav class="js-mega-menu navbar-nav-wrap">
         <!-- Default Logo -->
-        <a class="navbar-brand" href="/index.html" aria-label="Front">
+        <a class="navbar-brand" href="{% url 'website:index' %}" aria-label="Front">
           <img class="navbar-brand-logo" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
         </a>
         <!-- End Default Logo -->
@@ -91,6 +91,7 @@
                 <span class="cart-item-count ">3</span>
               </button>
               <!-- End Shopping Cart -->
+               
 
               <a class="btn btn-primary btn-transition" href="{% url 'accounts:login' %}">ورود</a>
             </li>
@@ -115,7 +116,7 @@
         <div class="col-lg-3 mb-5">
           <div class="d-flex align-items-start flex-column h-100">
             <!-- Logo -->
-            <a class="w-100 mb-3 mb-lg-auto" href="/index.html" aria-label="Front">
+            <a class="w-100 mb-3 mb-lg-auto" href="{% url 'website:index' %}" aria-label="Front">
               <img class="brand" src="{% static 'svg/logos/logo.svg ' %}" alt="Logo">
             </a>
             <!-- End Logo -->
