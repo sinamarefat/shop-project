@@ -22,3 +22,5 @@ def show_similar_products(product):
         status=ProductStatusType.publish.value,category__in=product_categories).order_by("-created_date")[:4]
     # wishlist_items =  WishlistProductModel.objects.filter(user=request.user).values_list("product__id",flat=True) if request.user.is_authenticated else []
     return {"similar_prodcuts": similar_prodcuts}
+
+
