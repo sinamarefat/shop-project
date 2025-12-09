@@ -24,6 +24,7 @@
     <!-- CSS Front Template -->
     <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
     
     {% block extra_css %} {% endblock extra_css %}
@@ -85,11 +86,12 @@
               <!-- End Search -->
 
               <!-- Shopping Cart -->
-              <button type="button" class="btn btn-ghost-secondary btn-icon" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasNavbarShoppingCart" aria-controls="offcanvasNavbarShoppingCart">
-                <i class="bi-basket"></i>
-                <span class="cart-item-count ">3</span>
-              </button>
+                <a href="{% url 'cart:cart-summary' %}" class="btn btn-ghost-secondary btn-icon">
+                        <i class="bi-basket"></i>
+                        <span class="cart-item-count" id="total-cart-item-count">{{cart.get_total_quantity}}</span>
+                  </a>
+                            <!-- End Shopping Cart -->
+         
               <!-- End Shopping Cart -->
                
 
@@ -523,6 +525,34 @@
       })
     })()
   </script>
+  <!-- JS Cart-->
+    <script>
+        function addToCart(product_id) {
+     
+            //console.log(product_id)
+            $.ajax({
+                url: "{%  url 'cart:session-add-product' %}",
+                method: 'POST',
+                data: {
+                    product_id: product_id,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+        
+                },
+                success: function (response) {
+                    $("#total-cart-item-count").html(response.total_quantity)
+                    console.log(response);
+                    // do something with the response data
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                    // handle the error case
+                }
+            });
+        }
+    
+        
+    </script>
+
   
 
     {% block extra_js %} {% endblock extra_js %}
