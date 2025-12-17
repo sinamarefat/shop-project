@@ -19,8 +19,8 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.shortcuts import redirect
 # Create your views here.
-# from payment.zarinpal_client import ZarinPalSandbox
-# from payment.models import PaymentModel
+from payment.zarinpal_client import ZarinPalSandbox
+from payment.models import PaymentModel
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -50,16 +50,16 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         order.save()
         return redirect(self.create_payment_url(order))
 
-    # def create_payment_url(self, order):
-    #     zarinpal = ZarinPalSandbox()
-    #     response = zarinpal.payment_request(order.get_price())
-    #     payment_obj = PaymentModel.objects.create(
-    #         authority_id=response.get("Authority"),
-    #         amount=order.get_price(),
-    #     )
-    #     order.payment = payment_obj
-    #     order.save()
-    #     return zarinpal.generate_payment_url(response.get("Authority"))
+    def create_payment_url(self, order):
+        zarinpal = ZarinPalSandbox()
+        response = zarinpal.payment_request(order.get_price())
+        payment_obj = PaymentModel.objects.create(
+            authority_id=response.get("Authority"),
+            amount=order.get_price(),
+        )
+        order.payment = payment_obj
+        order.save()
+        return zarinpal.generate_payment_url(response.get("Authority"))
 
     def create_order(self, address):
         return OrderModel.objects.create(
