@@ -4,7 +4,6 @@ from django.views.generic import (
     FormView,
     View
 )
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from order.permissions import HasCustomerAccessPermission
 from order.models import UserAddressModel
@@ -49,17 +48,27 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         self.apply_coupon(coupon, order, user, total_price)
         order.save()
         return redirect(self.create_payment_url(order))
-
+    
     def create_payment_url(self, order):
         zarinpal = ZarinPalSandbox()
         response = zarinpal.payment_request(order.get_price())
-        payment_obj = PaymentModel.objects.create(
-            authority_id=response.get("Authority"),
-            amount=order.get_price(),
-        )
-        order.payment = payment_obj
-        order.save()
-        return zarinpal.generate_payment_url(response.get("Authority"))
+        
+        # اصلاح شده: دریافت دیتا از ساختار نسخه 4
+        # ساختار پاسخ: {'data': {'authority': '...', 'code': 100, ...}, 'errors': ...}
+        if 'data' in response and response['data']:
+            authority = response['data']['authority']
+            
+            payment_obj = PaymentModel.objects.create(
+                authority_id=authority,
+                amount=order.get_price(),
+                response_json=response # ذخیره کل پاسخ برای دیباگ
+            )
+            order.payment = payment_obj
+            order.save()
+            return zarinpal.generate_payment_url(authority)
+        else:
+            # هندل کردن خطا در صورت عدم دریافت Authority
+            return reverse_lazy('order:failed')
 
     def create_order(self, address):
         return OrderModel.objects.create(
@@ -108,20 +117,17 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         context["total_tax"] = round((total_price * 9)/100)
         return context
 
-
+# بقیه کلاس‌های Order (Completed, Failed, ValidateCoupon) تغییری لازم ندارند
 class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/completed.html"
     
 class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/failed.html"
 
-
 class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
-
     def post(self, request, *args, **kwargs):
         code = request.POST.get("code")
         user = self.request.user
-
         status_code = 200
         message = "کد تخفیف با موفقیت ثبت شد"
         total_price = 0
@@ -134,16 +140,12 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
         else:
             if coupon.used_by.count() >= coupon.max_limit_usage:
                 status_code, message = 403, "محدودیت در تعداد استفاده"
-
             elif coupon.expiration_date and coupon.expiration_date < timezone.now():
                 status_code, message = 403, "کد تخفیف منقضی شده است"
-
             elif user in coupon.used_by.all():
                 status_code, message = 403, "این کد تخفیف قبلا توسط شما استفاده شده است"
-
             else:
                 cart = CartModel.objects.get(user=self.request.user)
-
                 total_price = cart.calculate_total_price()
                 total_price = round(
                     total_price - (total_price * (coupon.discount_percent/100)))
