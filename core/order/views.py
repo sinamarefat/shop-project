@@ -114,7 +114,7 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
             user=self.request.user)
         total_price = cart.calculate_total_price()
         context["total_price"] = total_price
-        context["total_tax"] = round((total_price * 9)/100)
+        context["total_tax"] = round((total_price * 10)/100)
         return context
 
 # بقیه کلاس‌های Order (Completed, Failed, ValidateCoupon) تغییری لازم ندارند
@@ -149,5 +149,5 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
                 total_price = cart.calculate_total_price()
                 total_price = round(
                     total_price - (total_price * (coupon.discount_percent/100)))
-                total_tax = round((total_price * 9)/100)
+                total_tax = round((total_price * 10)/100)
         return JsonResponse({"message": message, "total_tax": total_tax, "total_price": total_price}, status=status_code)

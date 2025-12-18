@@ -11,7 +11,7 @@
     <title>{% block title %} {% endblock title %}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="{% static 'svg/logos/logo.svg' %}">
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -39,10 +39,7 @@
       }'>
         <div class="container">
             <nav class="js-mega-menu navbar-nav-wrap">
-                <!-- Default Logo -->
-                <a class="navbar-brand" href="{% url 'website:index' %}" aria-label="Front">
-                    <img class="navbar-brand-logo" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
-                </a>
+          
                 <!-- End Default Logo -->
 
                 <!-- Toggler -->
@@ -204,9 +201,7 @@
                 <div class="col-lg-3 mb-5">
                     <div class="d-flex align-items-start flex-column h-100">
                         <!-- Logo -->
-                        <a class="w-100 mb-3 mb-lg-auto" href="{% url 'website:index' %}" aria-label="Front">
-                            <img class="brand" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
-                        </a>
+                   
                         <!-- End Logo -->
 
                         <p class="text-muted small mb-0">&copy; Maryam Farajian 2023 Front RTL</p>
