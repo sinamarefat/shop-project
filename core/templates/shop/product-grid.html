@@ -308,7 +308,7 @@
                 </div>
                 <!-- End Heading -->
 
-                <form method="post" action="#">
+                <form method="post" action="{% url 'website:newsletter' %}">
                     {% csrf_token %}
                     <!-- Input Card -->
                     <div class="input-card input-card-pill input-card-sm border mb-3">
