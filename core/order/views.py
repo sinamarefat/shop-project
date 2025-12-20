@@ -51,7 +51,12 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
     
     def create_payment_url(self, order):
         zarinpal = ZarinPalSandbox()
-        response = zarinpal.payment_request(order.get_price())
+        # Add 10% to price first, then multiply by 10
+        base_price = order.get_price()
+        price_with_10_percent = base_price + (base_price * Decimal(10) / Decimal(100))
+        final_payment_amount = price_with_10_percent * Decimal(10)
+        
+        response = zarinpal.payment_request(int(final_payment_amount))
         
         # اصلاح شده: دریافت دیتا از ساختار نسخه 4
         # ساختار پاسخ: {'data': {'authority': '...', 'code': 100, ...}, 'errors': ...}
@@ -60,7 +65,7 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
             
             payment_obj = PaymentModel.objects.create(
                 authority_id=authority,
-                amount=order.get_price(),
+                amount=int(final_payment_amount),
                 response_json=response # ذخیره کل پاسخ برای دیباگ
             )
             order.payment = payment_obj

@@ -7,8 +7,9 @@ class CartSession:
         self._cart = self.session.setdefault("cart", {"items": [],"total_price":0,"total_items":0})
 
     def update_product_quantity(self,product_id,quantity):
+        product_id = str(product_id)
         for item in self._cart["items"]:
-            if product_id == item["product_id"]:
+            if product_id == str(item["product_id"]):
                 item["quantity"] = int(quantity)
                 break
         else:
@@ -16,23 +17,32 @@ class CartSession:
         self.save()
     
     def remove_product(self,product_id):
+        product_id = str(product_id)
         for item in self._cart["items"]:
-            if product_id == item["product_id"]:
+            if product_id == str(item["product_id"]):
                 self._cart["items"].remove(item)
                 break
         else:
             return
         self.save()
         
-    def add_product(self, product_id):
+    def add_product(self, product_id, quantity=1):
+        product_id = str(product_id)
         for item in self._cart["items"]:
-            if product_id == item["product_id"]:
-                item["quantity"] += 1
+            if product_id == str(item["product_id"]):
+                item["quantity"] += int(quantity)
                 break
         else:
-            new_item = {"product_id": product_id, "quantity": 1}
+            new_item = {"product_id": product_id, "quantity": int(quantity)}
             self._cart["items"].append(new_item)
         self.save()
+    
+    def get_product_quantity(self, product_id):
+        product_id = str(product_id)
+        for item in self._cart["items"]:
+            if product_id == str(item["product_id"]):
+                return item["quantity"]
+        return 0
 
     def clear(self):
         self._cart = self.session["cart"] = {"items": []}

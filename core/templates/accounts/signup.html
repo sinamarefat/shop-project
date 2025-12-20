@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container content-space-3 content-space-t-lg-4 content-space-b-lg-3">
+    <div class="flex-grow-1 mx-auto" style="max-width: 28rem;">
+        <div class="text-center mb-5 mb-md-7">
+            <h1 class="h2">فرم ثبت نام</h1>
+            <p>برای ثبت نام کافیست فرم زیر را پر نمایید</p>
+        </div>
+        <form class="js-validate needs-validation" method="post" action="{% url 'accounts:signup' %}" novalidate>
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label" for="signupSimpleSignupEmail">ایمیل شما</label>
+                <input type="email" class="form-control form-control-lg text-center" name="email"
+                    id="signupSimpleSignupEmail" placeholder="email@site.com" value="{{ form.email.value|default:'' }}" required>
+                <span class="invalid-feedback">لطفا یک آدرس ایمیل معتبر وارد کنید.</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="signupSimpleSignupPassword">رمز عبور</label>
+                <div class="input-group input-group-merge">
+                    <input type="password" class="js-toggle-password form-control form-control-lg text-center"
+                        name="password1" id="signupSimpleSignupPassword" placeholder="حداقل ۸ کاراکتر" required
+                        data-hs-toggle-password-options='{
+                           "target": [".js-toggle-password-target-1", ".js-toggle-password-target-2"],
+                           "defaultClass": "bi-eye-slash",
+                           "showClass": "bi-eye",
+                           "classChangeTarget": ".js-toggle-passowrd-show-icon-1"
+                         }'>
+                    <a class="js-toggle-password-target-1 input-group-append input-group-text" href="javascript:;">
+                        <i class="js-toggle-passowrd-show-icon-1 bi-eye"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="signupSimpleSignupConfirmPassword">تایید رمز عبور</label>
+                <div class="input-group input-group-merge">
+                    <input type="password" class="js-toggle-password form-control form-control-lg text-center"
+                        name="password2" id="signupSimpleSignupConfirmPassword" placeholder="تکرار رمز عبور" required
+                        data-hs-toggle-password-options='{
+                           "target": [".js-toggle-password-target-1", ".js-toggle-password-target-2"],
+                           "defaultClass": "bi-eye-slash",
+                           "showClass": "bi-eye",
+                           "classChangeTarget": ".js-toggle-passowrd-show-icon-2"
+                         }'>
+                    <a class="js-toggle-password-target-2 input-group-append input-group-text" href="javascript:;">
+                        <i class="js-toggle-passowrd-show-icon-2 bi-eye"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="signupHeroFormPrivacyCheck" name="privacy_check" required>
+                <label class="form-check-label small" for="signupHeroFormPrivacyCheck">
+                    با ارسال این فرم <a href="#">سیاست حفظ حریم خصوصی</a> را تایید می‌کنم.
+                </label>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary btn-lg">ثبت نام</button>
+            </div>
+
+            <div class="text-center">
+                <p>از قبل حساب کاربری دارید؟ <a class="link" href="{% url 'accounts:login' %}">از اینجا وارد شوید</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    (function() {
+        // متصل کردن اسکریپت نمایش چشم (پسورد)
+        new HSTogglePassword('.js-toggle-password')
+    })()
+</script>
+{% endblock extra_js %}

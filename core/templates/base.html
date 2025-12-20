@@ -344,102 +344,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
 
-        <div class="offcanvas-body">
-
-            <div class="">
-                <!-- Product -->
-                <div class="border-bottom  mb-4">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0">
-                            <div class="avatar avatar-lg ms-3">
-                                <img class="avatar-img" src="{% static 'img/320x320/img2.jpg' %}"
-                                    alt="Image Description">
-                            </div>
-                        </div>
-
-                        <div class="flex-grow-1">
-                            <a class="h5" href="./product-overview.html">کوله پشتی ملی اصل</a>
-
-                            <div class="d-grid py-3">
-                                <div class="text-body py-1">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <span class="h6">تعداد:</span>
-                                        <div class="quantity">
-                                            <div class="input-group input-group-sm quantity-selector px-5">
-                                                <button type="button" class="btn btn-sm btn-icon btn-outline-primary">
-                                                    <i class="bi-plus"></i>
-                                                </button>
-                                                <input type="number" class="form-control" value="2" min="1" max="10">
-                                                <button type="button" class="btn btn-sm btn-icon btn-outline-danger">
-                                                    <i class="bi-dash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="text-body py-1">
-                                    <div class="d-flex justify-content-start  align-items-center">
-                                        <span class="h6">قیمت:</span>
-                                        <span class="px-5">150000 تومان</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Product -->
-                <!-- Product -->
-                <div class="border-bottom  mb-4">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0">
-                            <div class="avatar avatar-lg ms-3">
-                                <img class="avatar-img" src="{% static 'img/320x320/img3.jpg' %}"
-                                    alt="Image Description">
-                            </div>
-                        </div>
-
-                        <div class="flex-grow-1">
-                            <a class="h5" href="./product-overview.html">تیشرت مشکی</a>
-
-                            <div class="d-grid py-3">
-                                <div class="text-body py-1">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <span class="h6">تعداد:</span>
-                                        <div class="quantity">
-                                            <div class="input-group input-group-sm quantity-selector px-5">
-                                                <button type="button" class="btn btn-sm btn-icon btn-outline-primary">
-                                                    <i class="bi-plus"></i>
-                                                </button>
-                                                <input type="number" class="form-control" value="1" min="1" max="10">
-                                                <button type="button" class="btn btn-sm btn-icon btn-outline-danger">
-                                                    <i class="bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="text-body py-1">
-                                    <div class="d-flex justify-content-start  align-items-center">
-                                        <span class="h6">قیمت:</span>
-                                        <span class="px-5">100000 تومان</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Product -->
-
-            </div>
-
-            <div class="d-grid">
-                <p class="text-center">قیمت نهایی: 35000 تومان</p>
-                <a class="btn btn-primary btn-lg" href="/cart.html">سبد خرید</a>
-            </div>
-
-        </div>
+    
     </div>
     <!-- ========== END SECONDARY CONTENTS ========== -->
     <!-- JS Jquery-->
@@ -584,7 +489,7 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <!-- JS Cart-->
     <script>
-        function addToCart(product_id) {
+        function addToCart(product_id, quantity = 1) {
      
             //console.log(product_id)
             $.ajax({
@@ -592,16 +497,34 @@
                 method: 'POST',
                 data: {
                     product_id: product_id,
+                    quantity: quantity,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
         
                 },
                 success: function (response) {
                     $("#total-cart-item-count").html(response.total_quantity)
-                    console.log(response);
+                    Toastify({
+                        text: "محصول به سبد خرید اضافه شد",
+                        className: `info`,
+                        style: {
+                          background: "green",
+                        }
+                      }).showToast();
                     // do something with the response data
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(errorThrown);
+                    let errorMessage = "خطا در افزودن محصول به سبد خرید";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMessage = jqXHR.responseJSON.error;
+                    }
+                    Toastify({
+                        text: errorMessage,
+                        className: `error`,
+                        style: {
+                          background: "red",
+                        }
+                      }).showToast();
                     // handle the error case
                 }
             });

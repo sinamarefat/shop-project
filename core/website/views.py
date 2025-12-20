@@ -1,4 +1,4 @@
-from shop.models import ProductModel, ProductStatusType
+from shop.models import ProductModel, ProductStatusType, WishlistProductModel
 
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -13,10 +13,18 @@ class IndexView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get the last 3 products created
+        # Get the last 6 products based on highest score (avg_rate)
         context['latest_products'] = ProductModel.objects.filter(
             status=ProductStatusType.publish.value
-        ).order_by('-created_date')[:3]
+        ).order_by('-avg_rate', '-created_date')[:6]
+        
+        # Get wishlist items for authenticated users
+        if self.request.user.is_authenticated:
+            context['wishlist_items'] = WishlistProductModel.objects.filter(
+                user=self.request.user
+            ).values_list('product__id', flat=True)
+        else:
+            context['wishlist_items'] = []
         
         # Get hero slider products
         context['hero_slider_products'] = HeroSliderProduct.objects.filter(

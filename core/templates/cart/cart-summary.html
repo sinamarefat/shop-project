@@ -137,15 +137,17 @@
                         <form>
 
                             <div class="d-grid gap-3 mb-4">
-                                <dl class="row">
-                                    <dt class="col-sm-6">مالیات</dt>
-                                    <dd class="col-sm-12 text-sm-end mb-0">به همراه 9% در هنگام پرداخت</dd>
-                                </dl>
+                         
                                 <!-- End Row -->
+                               
 
                                 <dl class="row">
                                     <dt class="col-sm-6">جمع</dt>
                                     <dd class="col-sm-12 text-sm-end mb-0 formatted-price">{{total_payment_price}}</dd>
+                                </dl>
+                                 <dl class="row">
+                                    <dt class="col-sm-6">مالیات</dt>
+                                    <dd class="col-sm-12 text-sm-end mb-0">به همراه 10%  در هنگام پرداخت</dd>
                                 </dl>
                                 <!-- End Row -->
                             </div>
@@ -176,7 +178,55 @@
                     </div>
                     <div class="flex-grow-1 ms-2">
                         <span class="small me-1">نیاز به پشتیبانی دارید؟</span>
-                        <a class="link small" href="#">ارسال تیکت</a>
+                        <a class="link small" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ticketModal">ارسال تیکت</a>
+                    </div>
+
+                    <div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ticketModalLabel">ارسال تیکت پشتیبانی</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                
+                                <form action="{% url 'website:submit-ticket' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="modal-body text-start">
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">نام و نام خانوادگی</label>
+                                            <input type="text" name="full_name" class="form-control" placeholder="مثلا: علی علوی" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">ایمیل</label>
+                                            <input type="email" name="email" class="form-control" placeholder="example@mail.com" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">شماره تماس</label>
+                                            <input type="text" name="phone_number" class="form-control" placeholder="0912xxxxxxx">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">موضوع</label>
+                                            <input type="text" name="subject" class="form-control" value="سوال درباره محصول: {{ object.title }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">متن تیکت</label>
+                                            <textarea name="content" class="form-control" rows="5" placeholder="سوال خود را اینجا بنویسید..." required></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                                        <button type="submit" class="btn btn-primary">ثبت و ارسال تیکت</button>
+                                    </div>
+                                </form>
+                                
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- End Media -->
@@ -210,6 +260,18 @@
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(errorThrown);
+                let errorMessage = "خطا در به‌روزرسانی تعداد";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                    errorMessage = jqXHR.responseJSON.error;
+                }
+                Toastify({
+                    text: errorMessage,
+                    className: `error`,
+                    style: {
+                      background: "red",
+                    }
+                  }).showToast();
+                window.location.reload();
                 // handle the error case
             }
         });
